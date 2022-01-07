@@ -102,3 +102,10 @@ export const _isObjectArr = (arr) => {
   }
   return isObjectType;
 }
+
+export const _isObject = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Object]'
+}
+export const _isArray = (obj) => {
+  return Object.prototype.toString.call(obj) === '[object Array]'
+}

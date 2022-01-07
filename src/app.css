@@ -17,14 +17,14 @@
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
   border-radius: 8px;
-  box-shadow: inset 0 0 4px rgba(0, 0, 0, .2);
-  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, .2);
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
   background-color: #f2f2f2;
 }
 
 .animate__animated {
-  -webkit-animation-duration: .5s;
-  animation-duration: .5s;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
@@ -119,9 +119,9 @@
   top: 0;
   bottom: 0;
   right: 22%;
-  border-left: 1px solid #E8E8E8;
+  border-left: 1px solid #e8e8e8;
   box-sizing: content-box;
-  transition: all .5s;
+  transition: all 0.5s;
 }
 
 .right-container {
@@ -131,10 +131,10 @@
   width: 22%;
   right: 0;
   box-sizing: content-box;
-
 }
 
-.middle-container, .right-container {
+.middle-container,
+.right-container {
   display: flex;
   flex-direction: column;
 }
@@ -166,7 +166,7 @@
 }
 
 .brackets {
-  color: #E6B11C;
+  color: #e6b11c;
 }
 
 .key {
@@ -174,18 +174,19 @@
 }
 
 .string {
-  color: #027A16;
+  color: #027a16;
 }
 
 .keyword {
-  color: #043DB3;
+  color: #043db3;
 }
 
 .main-interface-name {
   color: #808080;
 }
 
-.array, .object {
+.array,
+.object {
   display: inline-flex;
   width: 17px;
   height: 17px;
@@ -194,7 +195,7 @@
   font-size: 13px;
   user-select: none;
   cursor: default;
-  transform: translate(-2px, .5px)
+  transform: translate(-2px, 0.5px);
 }
 
 .key-wrapper {
@@ -205,15 +206,15 @@
 .array::before,
 .object::before {
   display: inline-block;
-  content: '\e602';
-  color: #AEB9C0;
+  content: "\e602";
+  color: #aeb9c0;
   user-select: none;
   pointer-events: none;
-  transition: all .3s;
+  transition: all 0.3s;
   transform: translate(-2px, -1px) rotateZ(-90deg);
 }
 
-[data-fold='1']::before {
+[data-fold="1"]::before {
   transform: translate(-2px, -1px) rotateZ(0deg) !important;
   transform-origin: center center;
 }
@@ -229,12 +230,12 @@
 
 .title::before {
   margin-right: 5px;
-  content: '\e8b2';
+  content: "\e8b2";
   font-size: 17px;
 }
 
 .right-container {
-  border-left: 1px solid #E8E8E8;
+  border-left: 1px solid #e8e8e8;
 }
 
 .right-container .toggle {
@@ -251,10 +252,10 @@
   color: #999;
   border-bottom-left-radius: 3px;
   border-top-left-radius: 3px;
-  border-top: 1px solid #E8E8E8;
-  border-left: 1px solid #E8E8E8;
-  border-bottom: 1px solid #E8E8E8;
-  opacity: .5;
+  border-top: 1px solid #e8e8e8;
+  border-left: 1px solid #e8e8e8;
+  border-bottom: 1px solid #e8e8e8;
+  opacity: 0.5;
 }
 
 .right-container .toggle:hover {
@@ -265,8 +266,8 @@
 
 .right-container .toggle::before {
   display: inline-block;
-  content: '\e662';
-  transition: all .3s;
+  content: "\e662";
+  transition: all 0.3s;
 }
 
 .middle-container.hidden {
@@ -286,7 +287,7 @@
   width: 100%;
   display: flex;
   height: 35px;
-  background: #F3F3F3;
+  background: #f3f3f3;
 }
 
 .tab-list .tab-item {
@@ -297,8 +298,8 @@
   line-height: 35px;
   padding: 0 10px;
   font-size: 13px;
-  color: #6A6A6A;
-  background: #ECECEC;
+  color: #6a6a6a;
+  background: #ececec;
   cursor: pointer;
   user-select: none;
 }
@@ -306,4 +307,23 @@
 .tab-list .tab-item.current {
   color: #333;
   background: #fff;
+}
+
+.right-container .copy-button {
+  position: absolute;
+  display: inline-block;
+  padding: 5px 10px;
+  top: 45px;
+  right: 5px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #666;
+}
+
+.copy-button:before {
+  display: inline-block;
+  margin-right: 4px;
+  content: "\e8b0";
+  font-size: 16px;
 }

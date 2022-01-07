@@ -2,13 +2,23 @@ import Config from '../util/config';
 // 接口名称
 const interfaceName = 'Result'
 // 直接拼接基本类型
-const normalTypes = ['string', 'number', 'boolean'];
+const normalTypes = ['string', 'number', 'boolean', 'undefined'];
 // 处理数组
 let objs = [];
 let interfaceNames = [];
 let globalExportMode = Config.NOT_EXPORT;
+let globalInterfaceNamePrefix = '';
+
 // 生成的代码缩进 一个tab
-const indent = '&nbsp;&nbsp;&nbsp;&nbsp;';
+const indent = '&nbsp;&nbsp;';
+
+function _isObject(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]'
+}
+
+function _isArray(obj) {
+  return Object.prototype.toString.call(obj) === '[object Array]'
+}
 
 /**
  * 获取接口名称
@@ -41,7 +51,7 @@ function _getInterfaceName(key) {
     arr[i] = _getBaseName(arr[i]);
   }
   let fullName = arr.join('');
-  fullName = `I` + _getBaseName(fullName)
+  fullName = globalInterfaceNamePrefix + _getBaseName(fullName)
   fullName = _getOnlyInterfaceName(fullName)
   interfaceNames.push(fullName)
   return fullName;
@@ -57,7 +67,7 @@ function _getRenderInterface(name) {
   if ((globalExportMode === Config.EXPORT_DEFAULT && name === 'I' + interfaceName) || name === 'I' + interfaceName) { // export default 只能导出第一级
     return `<span class="keyword">${globalExportMode === Config.EXPORT ? 'export' : globalExportMode === Config.EXPORT_DEFAULT ? 'export default ' : ''} interface</span>`;
   }
-  return `<span class="keyword">${globalExportMode === Config.EXPORT ? 'export' : ''} interface</span>`;
+  return `<span class="keyword">${globalExportMode === Config.EXPORT ? 'export ' : ''}interface</span>`;
 }
 
 function __getRenderInterfaceName(name) {
@@ -113,7 +123,7 @@ function _handleArray(json, key, inters, indent) {
     inters += `${indent}${_getRenderKey(key)}:${_getRenderValue('any[]')}`;
   } else {
     // 如果是个空数组或者数组里面为非对象
-    if (json[key][0] instanceof Array) {
+    if (_isArray(json[key][0])) {
       // 判断数组是否都为boolean number string等基本类型
       inters += `${indent}${_getRenderKey(key)}:${_getRenderValue('any[]')}`;
     } else {
@@ -146,7 +156,12 @@ function _handleArray(json, key, inters, indent) {
  * @returns {*}
  */
 function _parseJson(json, name, inters, first = true, ind = indent) {
-  const keys = Reflect.ownKeys(json);
+  let keys = [];
+  try {
+    keys = Reflect.ownKeys(json);
+  } catch (e) {
+    console.log(e);
+  }
   if (!keys.length) { // 判断是否有key
     inters += `${_getRenderInterface(name)} ${__getRenderInterfaceName(name)} ${_getRenderLeft()}`
     inters += _getRenderRight();
@@ -161,11 +176,11 @@ function _parseJson(json, name, inters, first = true, ind = indent) {
   for (const key of keys) {
     // 判断值类型
     type = typeof json[key];
-    if (normalTypes.includes(type)) {
-      inters += `${ind}${_getRenderKey(key)}:${_getRenderValue(type)}`;
-    } else if (json[key] instanceof Array) {
+    if (normalTypes.includes(type) || json[key] === null) {
+      inters += `${ind}${_getRenderKey(key)}:${_getRenderValue(json[key] === null ? 'null' : type)}`;
+    } else if (_isArray(json[key])) {
       inters = _handleArray(json, key, inters, ind);
-    } else if (json[key] instanceof Object) {
+    } else if (_isObject(json[key])) {
       // inters += `${ind}${_getRenderKey(key)}: ${_parseJson(json[key], key, '', false, ind + ind)}`;
       const interfaceName = _getInterfaceName(key)
       inters += `${indent}${_getRenderKey(key)}: ${interfaceName};<br/>`;
@@ -189,18 +204,22 @@ function _parseJson(json, name, inters, first = true, ind = indent) {
  * @param exportMode 1 不导出 2 导出 3 导出为默认
  * @returns {*}
  */
-export default function interfaceDefinition(res, exportMode = Config.NOT_EXPORT) {
+export default function interfaceDefinition(res, exportMode = Config.NOT_EXPORT, interfaceNamePrefix = '') {
   globalExportMode = exportMode;
+  globalInterfaceNamePrefix = interfaceNamePrefix;
   let result;
   objs = [];
   interfaceNames = [];
   try {
-    const json = JSON.parse(res);
-    result = _parseJson(json, _getInterfaceName(interfaceName), '', true);
-    for (const obj of objs) {
-      result += '<br/>'
-      result += _parseJson(obj.value, obj.key, '', true);
-
+    const  json = eval(`(${res})`);
+    if (_isObject(json)) {
+      result = _parseJson(json, _getInterfaceName(interfaceName), '', true);
+      for (const obj of objs) {
+        result += '<br/>'
+        result += _parseJson(obj.value, obj.key, '', true);
+      }
+    } else {
+      result = '当前仅支持对象类型';
     }
   } catch (e) {
     result = e.message;

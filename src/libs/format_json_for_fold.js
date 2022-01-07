@@ -7,8 +7,8 @@ import {
   _getRenderLeftSquareBrackets,
   _getRenderRighSquareBrackets,
   _getRenderRightBrackets,
-  _getRenderValue,
-  _isBaseTypeArr,
+  _getRenderValue, _isArray,
+  _isBaseTypeArr, _isObject,
   _isObjectArr
 } from './format_base';
 
@@ -47,7 +47,7 @@ const _formatArr = (arr, currentStr, indent) => {
 
         currentStr += _getRenderValue(arr[i]);
 
-      } else if (arr[i] instanceof Array) { // 还是个数组
+      } else if (_isArray(arr[i])) { // 还是个数组
         if (arr[i].length === 0) { // 空数组
           currentStr += _getRenderLeftSquareBrackets() + _getRenderRighSquareBrackets();
         } else {
@@ -93,7 +93,13 @@ const _getData = (oldData, currentIndent) => {
  * @private
  */
 const _format = (jsonObj, currentStr, indent) => {
-  const keys = Reflect.ownKeys(jsonObj);
+  let keys = [];
+  try {
+    keys = Reflect.ownKeys(jsonObj);
+  } catch (e) {
+    // jsonObj === null
+    return currentStr += jsonObj;
+  }
   if (!keys.length) {
     return currentStr += _getRenderLeftBrackets() + _getRenderRightBrackets();
   }
@@ -103,7 +109,7 @@ const _format = (jsonObj, currentStr, indent) => {
     if (normalTypes.includes(typeof jsonObj[keys[i]])) {
       currentStr += `${i === 0 ? '' : ','}<br/>${indent_str}${indent}${_getRenderKey(keys[i])}: `;
       currentStr += `${_getRenderValue(jsonObj[keys[i]])}`
-    } else if (jsonObj[keys[i]] instanceof Array) { // 数组
+    } else if (_isArray(jsonObj[keys[i]])) { // 数组
       if (jsonObj[keys[i]].length === 0) { // 空数组
         currentStr += `${i === 0 ? '' : ','}<br/>${indent_str}${indent}${_getRenderKey(keys[i])}: `;
         currentStr += _getRenderLeftSquareBrackets() + _getRenderRighSquareBrackets();
@@ -129,12 +135,19 @@ const _format = (jsonObj, currentStr, indent) => {
  * @private
  */
 const _getObjStr = (key, value, currentStr, indent, type, i) => {
+
   const target = _getData(value, indent);
-  currentStr += `${i === 0 ? '' : ','}<br/>${indent_str}${indent}<span class="${type} iconfont" data-fold="${Config.FOLD_STATUS}" data-id="${target.id}"></span>${_getRenderKey(key)}: `;
-  if (type === 'object') {
-    currentStr += `<span id="${target.id}">${_getRenderLeftBrackets()}...${_getRenderRightBrackets()}</span>`;
-  } else {
-    currentStr += `<span id="${target.id}">${_getRenderLeftSquareBrackets()}...${_getRenderRighSquareBrackets()}</span>`;
+  // 值为null时直接显示
+  if (value === null) {
+    currentStr += `${i === 0 ? '' : ','}<br/>${indent_str}${indent}${_getRenderKey(key)}: `;
+    currentStr += _getRenderValue(value);
+  } else { // 判断是数组还是对象
+    currentStr += `${i === 0 ? '' : ','}<br/>${indent_str}${indent}<span class="${type} iconfont" data-fold="${Config.FOLD_STATUS}" data-id="${target.id}"></span>${_getRenderKey(key)}: `;
+    if (type === 'object') {
+      currentStr += `<span id="${target.id}">${_getRenderLeftBrackets()}...${_getRenderRightBrackets()}</span>`;
+    } else {
+      currentStr += `<span id="${target.id}">${_getRenderLeftSquareBrackets()}...${_getRenderRighSquareBrackets()}</span>`;
+    }
   }
   return currentStr;
 }
@@ -158,8 +171,12 @@ const formatJSON = (jsonStr, fold = Config.FOLD_STATUS, indent = '', isObj = tru
       return isObj ? _format(obj, '', EncryptAndDecrypt.decryptByDESModeEBC(indent)) : _formatArr(obj, '', EncryptAndDecrypt.decryptByDESModeEBC(indent));
     }
     // 第一级
-    const json = JSON.parse(jsonStr);
-    result = _format(json, result, '');
+    const json =  eval(`(${jsonStr})`);
+    if (_isObject(json)) {
+      result = _format(json, result, '');
+    } else {
+      result = _formatArr(json, result, '');
+    }
   } catch (e) {
     console.log(e);
     result = e.message;
