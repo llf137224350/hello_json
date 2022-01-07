@@ -18,5 +18,5 @@
 
 
 
-体验地址：https://etctest.cyzl.com/hello_json
+体验地址：http://www.uicoder.cn/hello_json/
 
