@@ -15,7 +15,7 @@ const Config = {
   FOLD_STATUS: 0,// 折叠状态
   OPEN_STATUS: 1,// 展开状态
 
-  INDENT_STR: '&nbsp;&nbsp;&nbsp;&nbsp;',
+  INDENT_STR: '&nbsp;&nbsp;',
   NORMAL_TYPES: ['string', 'number', 'boolean']
 }
 export default Config;
