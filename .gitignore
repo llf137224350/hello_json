@@ -24,4 +24,6 @@ yarn-error.log*
 .idea
 .vscode
 hello_json
-hello_json
+.eslintcache
+package-lock.json
+yarn.lock
