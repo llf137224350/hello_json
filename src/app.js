@@ -14,7 +14,7 @@ import formatJSONForFold from './libs/format_json_for_fold';
 import {message} from 'antd';
 import Config from './util/config';
 import EncryptAndDecrypt from "./util/encrypt_and_decrypt";
-
+import NavBar from './components/NavBar/index';
 const ClipboardJS = require('clipboard');
 
 const jsonStr = `
@@ -282,7 +282,6 @@ class App extends Component {
             >export default
             </div>
           </div>
-          <div className='toggle iconfont' onClick={this.toggleCreateInterfaceDefinition}/>
           <div className='content' dangerouslySetInnerHTML={{__html: interfaceDefinitionResult}}/>
           <div className='iconfont copy-button' title="点击复制" data-clipboard-text={(()=>{
             return interfaceDefinitionResult.
@@ -291,6 +290,7 @@ class App extends Component {
                                                               replace(/<\/?[^>]*>/g,'');
           })()}></div>
         </div>
+        <NavBar onToggle={this.toggleCreateInterfaceDefinition} open={this.state.createInterfaceDefinition}/>
       </div>
     </>
   }
