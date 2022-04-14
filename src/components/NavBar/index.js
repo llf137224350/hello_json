@@ -16,7 +16,7 @@ export default class NavBar extends Component {
           onClick={this.props.onToggle}
           className={this.getClassName()}
           title="收起/展开面板"
-        ></div>
+        />
         <div className="nav-bar-item iconfont code">
           <div className="content">
             <div className="tip">
@@ -25,7 +25,11 @@ export default class NavBar extends Component {
             <img
               className="collection-code"
               src="https://hsh.cyzl.com/file-server/g001/M00/01/90/oYYBAGJXiZCAdDCdAAN2ScI5dfM259.jpg"
+              alt=""
             />
+            <div className="tip">
+              赞助列表（微信昵称）：strive
+            </div>
           </div>
         </div>
         <div
@@ -34,7 +38,7 @@ export default class NavBar extends Component {
           onClick={function () {
             window.open("https://github.com/llf137224350/hello_json");
           }}
-        ></div>
+        />
       </div>
     );
   }
