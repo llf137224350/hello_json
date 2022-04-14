@@ -15,8 +15,7 @@
 
 
 界面采用react开发，请注意homepage为"/hello_json"，本地访问地址为http://localhost:3000/home_json
-<img src="https://hsh.cyzl.com/file-server/g001/M00/01/90/oYYBAGJXkzuAKENqAAduLghHqkQ702.png"/>
-
+![预览](https://hsh.cyzl.com/file-server/g001/M00/01/90/oYYBAGJXkzuAKENqAAduLghHqkQ702.png)
 
 体验地址：http://www.uicoder.cn/hello_json/
 
